@@ -8,7 +8,7 @@ include "header.php";
 		$(document).ready(function() {
 			$('#example').DataTable();
 		});
-	</script
+	</script>
 
 	<?php
 	$requetePrepare = $connexion->prepare('SELECT pseudo, nom, prenom, libelleStatut, libelleAssociation, adresse from utilisateur U join association A on U.idAssociation = A.idAssociation join statut S on (U.idAssociation,U.idStatut) = (S.idAssociation,S.idStatut);');
