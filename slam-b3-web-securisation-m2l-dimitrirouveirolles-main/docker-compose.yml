@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  php-apache-environment:
+    container_name: php8.1-apache-mdl
+    image: php:8.1-rc-apache
+    command: bash -c "docker-php-ext-install pdo pdo_mysql && apache2-foreground" #commandes à executer 
+    depends_on:
+        - db
+    volumes:
+        - ./site:/var/www/html #mettre dans site les fichiers web du projet
+    ports:
+        - 8000:80
+  
+  db:
+    container_name: db-mdl
+    image: mysql:latest
+    environment: #infos d'initialisation de la BDD
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: m2l_appli
+        MYSQL_USER: user
+        MYSQL_PASSWORD: mdp
+        MYSQL_TCP_PORT: 3306
+    volumes:
+        - ./database:/docker-entrypoint-initdb.d # mettre dans le dossier database le script init.db pour initialiser la bdd
+        - ./database/db_data:/var/lib/mysql # mettre dans le dossier database/db_data les fichiers de la BDD pour garder les évolutions
+    ports:
+        - "3306:3306"
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - '8080:80'
+    environment:
+        PMA_HOST: db
+        PMA_PORT: 3306
+    depends_on:
+        - db
